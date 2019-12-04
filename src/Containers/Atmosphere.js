@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getUserMediaStream } from '../utils/getUserInput';
-import AtmosDrumsDisplay from '../Components/AtmosDrumsDisplay';
+import AtmosDrumsDisplay from '../Components/AtmosphereDisplay';
+import { distortionCurve } from '../utils/distortionCurve';
 
 
 const AtmosDrums = () => {
@@ -15,11 +16,21 @@ const AtmosDrums = () => {
     const [gain, setGain] = useState();
     const channelGain = useRef();
 
+    const [dry, setDry] = useState();
+    const [wet, setWet] = useState();
+
     const dryGain = useRef();
     const wetGain = useRef();
 
+    const [distortionDryMix, setDistortionDryMix] = useState();
+    const [distortionWetMix, setDistortionWetMix] = useState();
+
     const distortionDry = useRef();
     const distortionWet = useRef();
+
+    const [distortionOversample, setDistortionOversample] = useState();
+
+    const distortion = useRef();
     const distortionOutput = useRef();
 
     const convolverDry = useRef();
@@ -31,13 +42,45 @@ const AtmosDrums = () => {
     useEffect(() => {
 
         if(channelGain.current !== undefined){
-            
+
             channelGain.current.gain.value = gain;
 
         }
 
+    }, [gain]);
 
-    }, [gain])
+    useEffect(() => {
+
+        if(channelGain.current !== undefined){
+
+            wetGain.current.gain.value = (wet/2);
+            dryGain.current.gain.value = (dry/2);
+
+        }
+
+    }, [wet, dry]);
+
+    useEffect(() => {
+
+        if(channelGain.current !== undefined){
+
+            distortionWet.current.gain.value =  distortionWetMix/2;
+            distortionDry.current.gain.value = distortionDryMix/2;
+
+        }
+
+    }, [distortionWetMix, distortionDryMix]);
+
+    useEffect(() => {
+
+        if(channelGain.current !== undefined){
+
+            distortion.current.oversample = distortionOversample;
+
+        }
+
+    }, [distortionOversample])
+
 
     const setUserInput = (streamNode, gainNode) => {
 
@@ -54,11 +97,16 @@ const AtmosDrums = () => {
 
     };
 
-    const setComponentDistortion = (distortionDryGainNode, distortionWetGainNode, distortionOutputGainNode) => {
+    const setComponentDistortion = async (distortionDryGainNode, distortionWetGainNode, distortionOutputGainNode, distortionNode) => {
 
         distortionDry.current = distortionDryGainNode;
         distortionWet.current = distortionWetGainNode;
         distortionOutput.current = distortionOutputGainNode;
+
+        const curve = await distortionCurve(50);
+        distortionNode.curve = curve;
+
+        distortion.current = distortionNode;
     };
 
     const setComponentConvolver = (convolverGainNodeDry, convolverGainNodeWet, convolverOutputGainNode) => {
@@ -80,7 +128,7 @@ const AtmosDrums = () => {
 
         setWetDryOutput(context.createGain(), context.createGain(), context.createGain());
 
-        setComponentDistortion(context.createGain(), context.createGain(), context.createGain());
+        setComponentDistortion(context.createGain(), context.createGain(), context.createGain(), context.createWaveShaper());
 
         setComponentConvolver(context.createGain(), context.createGain(), context.createGain())
 
@@ -126,7 +174,9 @@ const AtmosDrums = () => {
             wetGain.current.connect(distortionWet.current)
 
             distortionDry.current.connect(distortionOutput.current)
-            distortionWet.current.connect(distortionOutput.current)
+
+            distortionWet.current.connect(distortion.current)
+            distortion.current.connect(distortionOutput.current);
 
             distortionOutput.current.connect(convolverDry.current)
             distortionOutput.current.connect(convolverWet.current)
@@ -156,7 +206,9 @@ const AtmosDrums = () => {
             wetGain.current.disconnect(distortionWet.current)
 
             distortionDry.current.disconnect(distortionOutput.current)
-            distortionWet.current.disconnect(distortionOutput.current)
+            
+            distortionWet.current.disconnect(distortion.current)
+            distortion.current.disconnect(distortionOutput.current);
 
             distortionOutput.current.disconnect(convolverDry.current)
             distortionOutput.current.disconnect(convolverWet.current)
@@ -179,11 +231,50 @@ const AtmosDrums = () => {
         } else {
             setGain(g)
         }
-    }
+    };
+
+    const handleWetDryGainChange = (w) => {
+
+        if(w < 0){
+            setWet(0);
+            setDry(2);
+        } else if(w > 2){
+            setWet(2);
+            setDry(0);
+        } else {
+            setWet(w);
+            setDry(2-w);
+        }
+    };
+
+    const handleDistortionMixControl = (d) => {
+
+        if(d < 0){
+            setDistortionWetMix(0);
+            setDistortionDryMix(2);
+        } else if(d > 2){
+            setDistortionWetMix(2);
+            setDistortionDryMix(0);
+        } else {
+            setDistortionWetMix(d)
+            setDistortionDryMix(2-d)
+        }
+    };
+
+    const handleDistortionOversampleControl = (o) => {
+        
+        if(o <= -50){
+            setDistortionOversample('none')
+        } else if (o >= -49 && o <= 49){
+           setDistortionOversample('2x')
+        } else if(o >= 50){
+            setDistortionOversample('4x')
+        }
+    };
 
     return (
         <div>
-            <AtmosDrumsDisplay getContext={getContext} engageDisengage={engageDisengage} analyser={analyser} handleChannelGainChange={handleChannelGainChange}/>  
+            <AtmosDrumsDisplay getContext={getContext} engageDisengage={engageDisengage} analyser={analyser} handleChannelGainChange={handleChannelGainChange} handleWetDryGainChange={handleWetDryGainChange} handleDistortionMixControl={handleDistortionMixControl} handleDistortionOversampleControl={handleDistortionOversampleControl}/>  
         </div>
     )
 }
