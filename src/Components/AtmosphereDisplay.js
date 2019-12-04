@@ -33,7 +33,7 @@ const AtmosDrumsDisplay = ({getContext, engageDisengage, analyser, handleChannel
     const [distortionMix, setDistortionMix] = useState();
 
     const [distortionOversample, setDistortionOversample] = useState();
-    const [overSample, setOversample] = useState('none')
+    const [overSample, setOversample] = useState();
 
 
     const [distortionOversampleAmount, setDistortionOversampleAmount] = useState(0);
@@ -220,7 +220,19 @@ const AtmosDrumsDisplay = ({getContext, engageDisengage, analyser, handleChannel
     };
 
     const handleDistortionOversampleChange = () => {
-        setDistortionOversample(distortionOversampleAmount)
+        
+        let amount = distortionOversampleAmount;
+
+        if(amount <= -50){
+            setOversample('none')
+            setDistortionOversample('none')
+        } else if (amount >= -49 && amount <= 49){
+            setOversample('2x')
+           setDistortionOversample('2x')
+        } else if(amount >= 50){
+            setOversample('4x')
+            setDistortionOversample('4x')
+        }
     }
 
     const getDistortionOversampleDragMove = (e) => {
@@ -290,7 +302,7 @@ const AtmosDrumsDisplay = ({getContext, engageDisengage, analyser, handleChannel
                     <Text text="SELECT CONVOLVER" x={widthPercentage(8)} y={heightPercentage(53)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill='white' opacity={reverbSelectorHelper ? 1 : 0}/>
                     <Text text="DISTORTION MIX" x={widthPercentage(70)} y={heightPercentage(32)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill='white' opacity={distortionMixHelper ? 1 : 0}/>
                     <Text text="DISTORTION OVERSAMPLE" x={widthPercentage(75)} y={heightPercentage(8)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill='white' opacity={distortionOversampleHelper ? 1 : 0}/>
-                    <Text text={`${overSample}`} x={widthPercentage(76)} y={heightPercentage(18)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill='white' opacity={distortionOversampleHelper ? 1 : 0}/>
+                    <Text text={overSample && `${overSample}`} x={widthPercentage(76)} y={heightPercentage(18)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill='white' opacity={distortionOversampleHelper ? 1 : 0}/>
 
                 </Layer>
             </Stage>   

@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getUserMediaStream } from '../utils/getUserInput';
 import AtmosDrumsDisplay from '../Components/AtmosphereDisplay';
+///////////////////////////////////////////////////////////
 import { distortionCurve } from '../utils/distortionCurve';
+import { CreateConvolver } from '../utils/createConvolver';
+import BathVader from '../assets/ImpulseResponses/Bath-Vader.wav'
 
 
 const AtmosDrums = () => {
@@ -35,6 +38,9 @@ const AtmosDrums = () => {
 
     const convolverDry = useRef();
     const convolverWet = useRef();
+
+    const bath_vader = useRef();
+
     const convolverOutput = useRef();
 
     const outputGain = useRef();
@@ -109,11 +115,16 @@ const AtmosDrums = () => {
         distortion.current = distortionNode;
     };
 
-    const setComponentConvolver = (convolverGainNodeDry, convolverGainNodeWet, convolverOutputGainNode) => {
+    const setComponentConvolver = async (convolverGainNodeDry, convolverGainNodeWet, convolverOutputGainNode, bathVader) => {
 
         convolverDry.current = convolverGainNodeDry;
         convolverWet.current = convolverGainNodeWet;
         convolverOutput.current = convolverOutputGainNode;
+
+        const vaderVerb = await bathVader;
+        bath_vader.current = vaderVerb;
+
+
     }
 
     const setAudioAnalyser = (analyserNode) => {
@@ -130,7 +141,7 @@ const AtmosDrums = () => {
 
         setComponentDistortion(context.createGain(), context.createGain(), context.createGain(), context.createWaveShaper());
 
-        setComponentConvolver(context.createGain(), context.createGain(), context.createGain())
+        setComponentConvolver(context.createGain(), context.createGain(), context.createGain(), CreateConvolver(BathVader, context));
 
         setAudioAnalyser(context.createAnalyser());
     }
@@ -182,7 +193,9 @@ const AtmosDrums = () => {
             distortionOutput.current.connect(convolverWet.current)
 
             convolverDry.current.connect(convolverOutput.current)
-            convolverWet.current.connect(convolverOutput.current)
+
+            convolverWet.current.connect(bath_vader.current)
+            bath_vader.current.connect(convolverOutput.current)
 
             convolverOutput.current.connect(outputGain.current)
 
@@ -262,14 +275,7 @@ const AtmosDrums = () => {
     };
 
     const handleDistortionOversampleControl = (o) => {
-        
-        if(o <= -50){
-            setDistortionOversample('none')
-        } else if (o >= -49 && o <= 49){
-           setDistortionOversample('2x')
-        } else if(o >= 50){
-            setDistortionOversample('4x')
-        }
+        setDistortionOversample(o);
     };
 
     return (
