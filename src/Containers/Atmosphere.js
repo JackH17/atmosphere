@@ -5,6 +5,7 @@ import AtmosDrumsDisplay from '../Components/AtmosphereDisplay';
 import { distortionCurve } from '../utils/distortionCurve';
 import { CreateConvolver } from '../utils/createConvolver';
 import BathVader from '../assets/ImpulseResponses/Bath-Vader.wav'
+import etTuDeTu from '../assets/ImpulseResponses/et-tu-d-2.wav'
 
 
 const AtmosDrums = () => {
@@ -40,6 +41,7 @@ const AtmosDrums = () => {
     const convolverWet = useRef();
 
     const bath_vader = useRef();
+    const et_tu_dee_too = useRef();
 
     const convolverOutput = useRef();
 
@@ -115,7 +117,7 @@ const AtmosDrums = () => {
         distortion.current = distortionNode;
     };
 
-    const setComponentConvolver = async (convolverGainNodeDry, convolverGainNodeWet, convolverOutputGainNode, bathVader) => {
+    const setComponentConvolver = async (convolverGainNodeDry, convolverGainNodeWet, convolverOutputGainNode, bathVader, deeTwo) => {
 
         convolverDry.current = convolverGainNodeDry;
         convolverWet.current = convolverGainNodeWet;
@@ -124,7 +126,8 @@ const AtmosDrums = () => {
         const vaderVerb = await bathVader;
         bath_vader.current = vaderVerb;
 
-
+        const deeToo = await deeTwo;
+        et_tu_dee_too.current = deeToo;
     }
 
     const setAudioAnalyser = (analyserNode) => {
@@ -141,7 +144,7 @@ const AtmosDrums = () => {
 
         setComponentDistortion(context.createGain(), context.createGain(), context.createGain(), context.createWaveShaper());
 
-        setComponentConvolver(context.createGain(), context.createGain(), context.createGain(), CreateConvolver(BathVader, context));
+        setComponentConvolver(context.createGain(), context.createGain(), context.createGain(), CreateConvolver(BathVader, context), CreateConvolver(etTuDeTu, context));
 
         setAudioAnalyser(context.createAnalyser());
     }
@@ -194,8 +197,8 @@ const AtmosDrums = () => {
 
             convolverDry.current.connect(convolverOutput.current)
 
-            convolverWet.current.connect(bath_vader.current)
-            bath_vader.current.connect(convolverOutput.current)
+            convolverWet.current.connect(et_tu_dee_too.current)
+            et_tu_dee_too.current.connect(convolverOutput.current)
 
             convolverOutput.current.connect(outputGain.current)
 
