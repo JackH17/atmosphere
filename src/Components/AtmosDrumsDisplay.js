@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Konva from 'konva';
 import { Stage, Layer, Rect, Circle, Text } from "react-konva";
 
-const AtmosDrumsDisplay = ({getContext, engageDisengage, analyser}) => {
+const AtmosDrumsDisplay = ({getContext, engageDisengage, analyser, handleChannelGainChange}) => {
 
     const [engaged, setEngaged] = useState();
 
@@ -17,6 +17,8 @@ const AtmosDrumsDisplay = ({getContext, engageDisengage, analyser}) => {
     const [distortionOversampleHelper, setDistortionOversampleHelper] = useState(false);
 
     const [volumeAmount, setVolumeAmount] = useState(-100);
+    const [volume, setVolume] = useState();
+
     const [wetDryAmount, setWetDryAmount] = useState(-101);
     const [reverbMixAmount, setReverbMixAmount] = useState(-101);
     const [distortionMixAmount, setDistortionMixAmount] = useState(-101);
@@ -79,8 +81,18 @@ const AtmosDrumsDisplay = ({getContext, engageDisengage, analyser}) => {
             animation.stop();
         };
 
-    })
+    });
 
+    const handleGainUpdate = useCallback(() => {
+        handleChannelGainChange(volume)
+
+    }, [volume, handleChannelGainChange])
+
+    useEffect(() => {
+
+        handleGainUpdate()
+
+    }, [handleGainUpdate])
 
     const widthPercentage = (width) => {   
         return Math.floor(stageWidth / (100 / width))
@@ -99,12 +111,12 @@ const AtmosDrumsDisplay = ({getContext, engageDisengage, analyser}) => {
         engageDisengage()
     };
 
-    const handleWetDryHelper = () => {
-        setWetDryHelper(!wetDryHelper);
-    };
-
     const handleVolumeHelper = () => {
         setVolumeHelper(!volumeHelper);
+    };
+
+    const handleWetDryHelper = () => {
+        setWetDryHelper(!wetDryHelper);
     };
 
     const handleReverbMixHelper = () => {
@@ -121,8 +133,19 @@ const AtmosDrumsDisplay = ({getContext, engageDisengage, analyser}) => {
 
     const handleDistortionOversampleHelper = () => {
         setDistortionOversampleHelper(!distortionOversampleHelper);
+    };
+
+    const handleVolumeChange = () => {
+        setVolume(((Math.floor(volumeAmount/10)) + 10)/10);
     }
 
+    const getVolumeDragMove = (e) => {
+
+        const difference = (e.currentTarget.attrs.x - e.evt.clientX)
+
+        setVolumeAmount(difference)
+
+    };
 
     const getReverbMixDragMove = (e) => {
 
@@ -133,13 +156,6 @@ const AtmosDrumsDisplay = ({getContext, engageDisengage, analyser}) => {
 
     };
 
-    const getVolumeDragMove = (e) => {
-
-        const difference = (e.currentTarget.attrs.x - e.evt.clientX)
-
-        setVolumeAmount(difference)
-
-    };
 
     const getWetDryDragMove = (e) => {
         const difference = (e.currentTarget.attrs.x - e.evt.clientX)
@@ -176,7 +192,7 @@ const AtmosDrumsDisplay = ({getContext, engageDisengage, analyser}) => {
                     <Circle key={i} id={`star-${i}`}  x={Math.random() * window.innerWidth} y={Math.random() * window.innerHeight} width={widthPercentage(2)} height={heightPercentage(2)} fill="white" opacity={engaged ? 1 : 0} shadowColor="black" shadowBlur={10}/>))}
                     <Circle x={widthPercentage(15)} y={heightPercentage(18)} radius={widthPercentage(3)} fill='white' shadowColor="white" shadowBlur={widthPercentage(30)} shadowOpacity={1} onClick={handleContext}/>
                     <Circle x={widthPercentage(24)} y={heightPercentage(7)} radius={widthPercentage(3)} fill='white' shadowColor="white" shadowBlur={widthPercentage(30)} shadowOpacity={1} onClick={handleEngage}/>
-                    <Circle ref={volumePlanet} x={widthPercentage(50)} y={heightPercentage(50)} radius={widthPercentage(10)} fill='blue' shadowColor="blue" shadowBlur={widthPercentage(20)} draggable onDragMove={getVolumeDragMove} dragBoundFunc={function(pos){return{x: this.absolutePosition().x, y: this.absolutePosition().y}}} onMouseEnter={handleReverbMixHelper} onMouseLeave={handleReverbMixHelper} shadowOpacity={1} onMouseEnter={handleVolumeHelper} onMouseLeave={handleVolumeHelper} shadowOpacity={0.8}/>
+                    <Circle ref={volumePlanet} x={widthPercentage(50)} y={heightPercentage(50)} radius={widthPercentage(10)} fill='blue' shadowColor="blue" shadowBlur={widthPercentage(20)} draggable onDragEnd={handleVolumeChange} onDragMove={getVolumeDragMove} dragBoundFunc={function(pos){return{x: this.absolutePosition().x, y: this.absolutePosition().y}}} onMouseEnter={handleVolumeHelper} onMouseLeave={handleVolumeHelper} shadowOpacity={1}/>
                         <Circle x={widthPercentage(38)} y={heightPercentage(60)} radius={widthPercentage(0.2)} fill='pink' shadowColor="blue" shadowBlur={widthPercentage(10)} shadowOpacity={1} opacity={volumeAmount >= -90 ? 1 : 0}/>
                         <Circle x={widthPercentage(38)} y={heightPercentage(55)} radius={widthPercentage(0.4)} fill='pink' shadowColor="blue" shadowBlur={widthPercentage(10)} shadowOpacity={1} opacity={volumeAmount >= -70 ? 1 : 0}/>
                         <Circle x={widthPercentage(38)} y={heightPercentage(50)} radius={widthPercentage(0.6)} fill='pink' shadowColor="blue" shadowBlur={widthPercentage(10)} shadowOpacity={1} opacity={volumeAmount >= -50 ? 1 : 0}/>
