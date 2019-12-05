@@ -4,8 +4,12 @@ import AtmosDrumsDisplay from '../Components/AtmosphereDisplay';
 ///////////////////////////////////////////////////////////
 import { distortionCurve } from '../utils/distortionCurve';
 import { CreateConvolver } from '../utils/createConvolver';
-import BathVader from '../assets/ImpulseResponses/Bath-Vader.wav'
-import etTuDeTu from '../assets/ImpulseResponses/et-tu-d-2.wav'
+import BathVader from '../assets/ImpulseResponses/Bath-Vader.wav';
+import CoolHandLuke from '../assets/ImpulseResponses/cool-hand-luke.wav';
+import ElegantWeapon from '../assets/ImpulseResponses/elegant-weapon.wav';
+import EtTuDeTu from '../assets/ImpulseResponses/et-tu-d-2.wav';
+import HavingABlast from '../assets/ImpulseResponses/having-a-blast.wav'
+import HelloThere from '../assets/ImpulseResponses/hello-there.wav';
 
 
 const AtmosDrums = () => {
@@ -41,7 +45,22 @@ const AtmosDrums = () => {
     const convolverWet = useRef();
 
     const bath_vader = useRef();
+    const bath_vader_gain = useRef();
+
+    const cool_hand_luke = useRef();
+    const cool_hand_luke_gain = useRef();
+
+    const elegant_weapon = useRef();
+    const elegant_weapon_gain = useRef();
+
     const et_tu_dee_too = useRef();
+    const et_tu_dee_too_gain = useRef();
+
+    const having_a_blast = useRef();
+    const having_a_blast_gain = useRef();
+
+    const hello_there = useRef();
+    const hello_there_gain = useRef();
 
     const convolverOutput = useRef();
 
@@ -100,7 +119,11 @@ const AtmosDrums = () => {
     const setWetDryOutput = (dryGainNode, wetGainNode, outputGainNode) => {
 
         dryGain.current = dryGainNode;
+        dryGain.current.gain.value = 1;
+
         wetGain.current = wetGainNode;
+        wetGain.current.gain.value = 0;
+
         outputGain.current = outputGainNode;
 
     };
@@ -117,17 +140,39 @@ const AtmosDrums = () => {
         distortion.current = distortionNode;
     };
 
-    const setComponentConvolver = async (convolverGainNodeDry, convolverGainNodeWet, convolverOutputGainNode, bathVader, deeTwo) => {
+    const setComponentConvolvers = async (context) => {
 
-        convolverDry.current = convolverGainNodeDry;
-        convolverWet.current = convolverGainNodeWet;
-        convolverOutput.current = convolverOutputGainNode;
+        convolverDry.current = context.createGain();
+        convolverDry.current.gain.value = 1;
 
-        const vaderVerb = await bathVader;
-        bath_vader.current = vaderVerb;
+        convolverWet.current = context.createGain();
+        convolverWet.current.gain.value = 0;
 
-        const deeToo = await deeTwo;
-        et_tu_dee_too.current = deeToo;
+        convolverOutput.current = context.createGain();
+
+        bath_vader.current = await CreateConvolver(BathVader, context);
+        bath_vader_gain.current = context.createGain();
+        bath_vader_gain.current.gain.value = 1;
+
+        cool_hand_luke.current = await CreateConvolver(CoolHandLuke, context);
+        cool_hand_luke_gain.current = context.createGain();
+        cool_hand_luke_gain.current.gain.value = 0;
+
+        elegant_weapon.current = await CreateConvolver(ElegantWeapon, context);
+        elegant_weapon_gain.current = context.createGain();
+        elegant_weapon_gain.current.gain.value = 0;
+
+        et_tu_dee_too.current = await CreateConvolver(EtTuDeTu, context);
+        et_tu_dee_too_gain.current = context.createGain();
+        et_tu_dee_too_gain.current.gain.value = 0;
+
+        having_a_blast.current = await CreateConvolver(HavingABlast, context);
+        having_a_blast_gain.current = context.createGain();
+        having_a_blast_gain.current.gain.value = 0;
+
+        hello_there.current = await CreateConvolver(HelloThere, context);
+        hello_there_gain.current = context.createGain();
+        hello_there_gain.current.gain.value = 0;
     }
 
     const setAudioAnalyser = (analyserNode) => {
@@ -144,7 +189,7 @@ const AtmosDrums = () => {
 
         setComponentDistortion(context.createGain(), context.createGain(), context.createGain(), context.createWaveShaper());
 
-        setComponentConvolver(context.createGain(), context.createGain(), context.createGain(), CreateConvolver(BathVader, context), CreateConvolver(etTuDeTu, context));
+        setComponentConvolvers(context);
 
         setAudioAnalyser(context.createAnalyser());
     }
@@ -197,8 +242,29 @@ const AtmosDrums = () => {
 
             convolverDry.current.connect(convolverOutput.current)
 
-            convolverWet.current.connect(et_tu_dee_too.current)
+            convolverWet.current.connect(bath_vader_gain.current)
+            bath_vader_gain.current.connect(bath_vader.current)
+            bath_vader.current.connect(convolverOutput.current)
+
+            convolverWet.current.connect(cool_hand_luke_gain.current)
+            cool_hand_luke_gain.current.connect(cool_hand_luke.current)
+            cool_hand_luke.current.connect(convolverOutput.current)
+
+            convolverWet.current.connect(elegant_weapon_gain.current)
+            elegant_weapon_gain.current.connect(elegant_weapon.current)
+            elegant_weapon.current.connect(convolverOutput.current)
+
+            convolverWet.current.connect(et_tu_dee_too_gain.current)
+            et_tu_dee_too_gain.current.connect(et_tu_dee_too.current)
             et_tu_dee_too.current.connect(convolverOutput.current)
+
+            convolverWet.current.connect(having_a_blast_gain.current)
+            having_a_blast_gain.current.connect(having_a_blast.current)
+            having_a_blast.current.connect(convolverOutput.current)
+
+            convolverWet.current.connect(hello_there_gain.current)
+            hello_there_gain.current.connect(hello_there.current)
+            hello_there.current.connect(convolverOutput.current)
 
             convolverOutput.current.connect(outputGain.current)
 
@@ -230,7 +296,30 @@ const AtmosDrums = () => {
             distortionOutput.current.disconnect(convolverWet.current)
 
             convolverDry.current.disconnect(convolverOutput.current)
-            convolverWet.current.disconnect(convolverOutput.current)
+
+            convolverWet.current.disconnect(bath_vader_gain.current)
+            bath_vader_gain.current.disconnect(bath_vader.current)
+            bath_vader.current.disconnect(convolverOutput)
+
+            convolverWet.current.disconnect(cool_hand_luke_gain.current)
+            cool_hand_luke_gain.current.disconnect(cool_hand_luke.current)
+            cool_hand_luke.current.disconnect(convolverOutput)
+
+            convolverWet.current.disconnect(elegant_weapon_gain.current)
+            elegant_weapon_gain.current.disconnect(elegant_weapon.current)
+            elegant_weapon.current.disconnect(convolverOutput)
+
+            convolverWet.current.disconnect(et_tu_dee_too_gain.current)
+            et_tu_dee_too_gain.current.disconnect(et_tu_dee_too.current)
+            et_tu_dee_too.current.disconnect(convolverOutput)
+
+            convolverWet.current.disconnect(having_a_blast_gain.current)
+            having_a_blast_gain.current.disconnect(having_a_blast.current)
+            having_a_blast.current.disconnect(convolverOutput)
+
+            convolverWet.current.disconnect(hello_there_gain.current)
+            hello_there_gain.current.disconnect(hello_there.current)
+            hello_there.current.disconnect(convolverOutput)
 
             convolverOutput.current.disconnect(outputGain.current)
 
