@@ -41,6 +41,9 @@ const AtmosDrums = () => {
     const distortion = useRef();
     const distortionOutput = useRef();
 
+    const [convolverDryMix, setConvolverDryMix] = useState();
+    const [convolverWetMix, setConvolverWetMix] = useState();
+
     const convolverDry = useRef();
     const convolverWet = useRef();
 
@@ -106,7 +109,17 @@ const AtmosDrums = () => {
 
         }
 
-    }, [distortionOversample])
+    }, [distortionOversample]);
+
+    useEffect(() => {
+
+        if(channelGain.current !== undefined){
+
+            convolverDry.current.gain.value = convolverDryMix/2;
+            convolverWet.current.gain.value = convolverWetMix/2;
+        }
+
+    }, [convolverDryMix, convolverWetMix])
 
 
     const setUserInput = (streamNode, gainNode) => {
@@ -352,6 +365,24 @@ const AtmosDrums = () => {
         }
     };
 
+    const handleConvolverMixControl = (v) => {
+
+        if(v < 0){
+            setConvolverWetMix(0);
+            setConvolverDryMix(2);
+        } else if(v > 2){
+            setConvolverWetMix(2);
+            setConvolverDryMix(0);
+        } else {
+            setConvolverWetMix(v);
+            setConvolverDryMix(2 - v);
+        }
+    };
+
+    const handleConvolverSelector = (v) => {
+        console.log(v)
+    };
+
     const handleDistortionMixControl = (d) => {
 
         if(d < 0){
@@ -372,7 +403,7 @@ const AtmosDrums = () => {
 
     return (
         <div>
-            <AtmosDrumsDisplay getContext={getContext} engageDisengage={engageDisengage} analyser={analyser} handleChannelGainChange={handleChannelGainChange} handleWetDryGainChange={handleWetDryGainChange} handleDistortionMixControl={handleDistortionMixControl} handleDistortionOversampleControl={handleDistortionOversampleControl}/>  
+            <AtmosDrumsDisplay getContext={getContext} engageDisengage={engageDisengage} analyser={analyser} handleChannelGainChange={handleChannelGainChange} handleWetDryGainChange={handleWetDryGainChange} handleDistortionMixControl={handleDistortionMixControl} handleDistortionOversampleControl={handleDistortionOversampleControl} handleConvolverMixControl={handleConvolverMixControl} handleConvolverSelector={handleConvolverSelector}/>  
         </div>
     )
 }
