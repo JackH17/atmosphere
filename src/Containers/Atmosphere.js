@@ -14,6 +14,7 @@ import HelloThere from '../assets/ImpulseResponses/hello-there.wav';
 
 const AtmosDrums = () => {
 
+    const [audioCTX, setAudioCTX] = useState(false)
     const [engaged, setEngaged] = useState(false);
 
     const [input, setInput] = useState();
@@ -65,6 +66,7 @@ const AtmosDrums = () => {
     const hello_there = useRef();
     const hello_there_gain = useRef();
 
+    const [convolver, setConvolver] = useState('bath vader')
     const convolverOutput = useRef();
 
     const outputGain = useRef();
@@ -110,6 +112,57 @@ const AtmosDrums = () => {
         }
 
     }, [distortionOversample]);
+
+    useEffect(() => {
+
+        if(channelGain.current !== undefined){
+
+            if(convolver === 'bath vader'){
+                bath_vader_gain.current.gain.value = 1;
+                cool_hand_luke_gain.current.gain.value = 0;
+                elegant_weapon_gain.current.gain.value = 0;
+                et_tu_dee_too_gain.current.gain.value = 0;
+                having_a_blast_gain.current.gain.value = 0;
+                hello_there_gain.current.gain.value = 0;
+            } else if(convolver === 'cool hand luke'){
+                bath_vader_gain.current.gain.value = 0;
+                cool_hand_luke_gain.current.gain.value = 1;
+                elegant_weapon_gain.current.gain.value = 0;
+                et_tu_dee_too_gain.current.gain.value = 0;
+                having_a_blast_gain.current.gain.value = 0;
+                hello_there_gain.current.gain.value = 0;
+            } else if(convolver === 'elegant weapon'){
+                bath_vader_gain.current.gain.value = 0;
+                cool_hand_luke_gain.current.gain.value = 0;
+                elegant_weapon_gain.current.gain.value = 1;
+                et_tu_dee_too_gain.current.gain.value = 0;
+                having_a_blast_gain.current.gain.value = 0;
+                hello_there_gain.current.gain.value = 0;
+            } else if(convolver === 'et-tu dee-2'){
+                bath_vader_gain.current.gain.value = 0;
+                cool_hand_luke_gain.current.gain.value = 0;
+                elegant_weapon_gain.current.gain.value = 0;
+                et_tu_dee_too_gain.current.gain.value = 1;
+                having_a_blast_gain.current.gain.value = 0;
+                hello_there_gain.current.gain.value = 0;
+            } else if(convolver === 'having a blast'){
+                bath_vader_gain.current.gain.value = 0;
+                cool_hand_luke_gain.current.gain.value = 0;
+                elegant_weapon_gain.current.gain.value = 0;
+                et_tu_dee_too_gain.current.gain.value = 0;
+                having_a_blast_gain.current.gain.value = 1;
+                hello_there_gain.current.gain.value = 0;
+            } else if(convolver === 'hello there'){
+                bath_vader_gain.current.gain.value = 0;
+                cool_hand_luke_gain.current.gain.value = 0;
+                elegant_weapon_gain.current.gain.value = 0;
+                et_tu_dee_too_gain.current.gain.value = 0;
+                having_a_blast_gain.current.gain.value = 0;
+                hello_there_gain.current.gain.value = 1;
+            }
+ 
+        }
+    }, [convolver]);
 
     useEffect(() => {
 
@@ -222,6 +275,7 @@ const AtmosDrums = () => {
 
         } else {
             createAudioNodes(userMediaStreamNode, context);
+            setAudioCTX(!audioCTX)
         }
 
     };
@@ -295,7 +349,6 @@ const AtmosDrums = () => {
             channelGain.current.disconnect(wetGain.current)
 
             dryGain.current.disconnect(outputGain.current)
-            outputGain.current.disconnect(output)
 
             wetGain.current.disconnect(distortionDry.current)
             wetGain.current.disconnect(distortionWet.current)
@@ -312,27 +365,27 @@ const AtmosDrums = () => {
 
             convolverWet.current.disconnect(bath_vader_gain.current)
             bath_vader_gain.current.disconnect(bath_vader.current)
-            bath_vader.current.disconnect(convolverOutput)
+            bath_vader.current.disconnect(convolverOutput.current)
 
             convolverWet.current.disconnect(cool_hand_luke_gain.current)
             cool_hand_luke_gain.current.disconnect(cool_hand_luke.current)
-            cool_hand_luke.current.disconnect(convolverOutput)
+            cool_hand_luke.current.disconnect(convolverOutput.current)
 
             convolverWet.current.disconnect(elegant_weapon_gain.current)
             elegant_weapon_gain.current.disconnect(elegant_weapon.current)
-            elegant_weapon.current.disconnect(convolverOutput)
+            elegant_weapon.current.disconnect(convolverOutput.current)
 
             convolverWet.current.disconnect(et_tu_dee_too_gain.current)
             et_tu_dee_too_gain.current.disconnect(et_tu_dee_too.current)
-            et_tu_dee_too.current.disconnect(convolverOutput)
+            et_tu_dee_too.current.disconnect(convolverOutput.current)
 
             convolverWet.current.disconnect(having_a_blast_gain.current)
             having_a_blast_gain.current.disconnect(having_a_blast.current)
-            having_a_blast.current.disconnect(convolverOutput)
+            having_a_blast.current.disconnect(convolverOutput.current)
 
             convolverWet.current.disconnect(hello_there_gain.current)
             hello_there_gain.current.disconnect(hello_there.current)
-            hello_there.current.disconnect(convolverOutput)
+            hello_there.current.disconnect(convolverOutput.current)
 
             convolverOutput.current.disconnect(outputGain.current)
 
@@ -380,7 +433,7 @@ const AtmosDrums = () => {
     };
 
     const handleConvolverSelector = (v) => {
-        console.log(v)
+        setConvolver(v)
     };
 
     const handleDistortionMixControl = (d) => {
@@ -403,7 +456,7 @@ const AtmosDrums = () => {
 
     return (
         <div>
-            <AtmosDrumsDisplay getContext={getContext} engageDisengage={engageDisengage} analyser={analyser} handleChannelGainChange={handleChannelGainChange} handleWetDryGainChange={handleWetDryGainChange} handleDistortionMixControl={handleDistortionMixControl} handleDistortionOversampleControl={handleDistortionOversampleControl} handleConvolverMixControl={handleConvolverMixControl} handleConvolverSelector={handleConvolverSelector}/>  
+            <AtmosDrumsDisplay getContext={getContext} engageDisengage={engageDisengage} analyser={analyser} handleChannelGainChange={handleChannelGainChange} handleWetDryGainChange={handleWetDryGainChange} handleDistortionMixControl={handleDistortionMixControl} handleDistortionOversampleControl={handleDistortionOversampleControl} handleConvolverMixControl={handleConvolverMixControl} handleConvolverSelector={handleConvolverSelector} audioCTX={audioCTX}/>  
         </div>
     )
 }
