@@ -179,7 +179,7 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
     const handleVolumeChange = () => {
 
-        if(!engaged){
+        if(!audioCTX){
             return;
         }
 
@@ -220,7 +220,7 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
     const handleReverbMixChange = () => {
 
-        if(!engaged){
+        if(!audioCTX){
             return;
         }
 
@@ -240,7 +240,7 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
     const handleReverbSelectorChange = () => {
 
-        if(!engaged){
+        if(!audioCTX){
             return;
         }
 
@@ -273,7 +273,7 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
     const handleDistortionMixChange = () => {
 
-        if(!engaged){
+        if(!audioCTX){
             return;
         }
 
@@ -292,7 +292,7 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
     const handleDistortionOversampleChange = () => {
 
-        if(!engaged){
+        if(!audioCTX){
             return;
         }
         
