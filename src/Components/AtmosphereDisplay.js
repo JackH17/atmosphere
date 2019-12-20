@@ -9,6 +9,8 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
     const [stageWidth, setStageWidth] = useState(window.innerWidth);
     const [stageHeight, setStageHeight] = useState(window.innerHeight);
 
+    const [mouseHelper, setMouseHelper] = useState(false);
+    const [hideUserAudioHelper, setHideUserAudioHelper] = useState(false);
     const [engageHelper, setEngageHelper] = useState(false);
     const [volumeHelper, setVolumeHelper] = useState(false);
     const [wetDryHelper, setWetDryHelper] = useState(false);
@@ -165,6 +167,7 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
             return;
         }
 
+        setHideUserAudioHelper(true);
         getContext();
     }
 
@@ -320,18 +323,27 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
         } else {
             setEngageHelper(!engageHelper)
         }
-    }
+    };
+
+    const handleFirstMouseEnter = () => {
+
+        if(mouseHelper) {
+            return;
+        }
+
+        setMouseHelper(!mouseHelper)
+    };
 
     return (
         <div>
-            <Stage ref={stageRef} width={stageWidth} height={stageHeight}>
+            <Stage ref={stageRef} width={stageWidth} height={stageHeight} onMouseEnter={handleFirstMouseEnter}>
                 <Layer>
                     <Rect width={stageWidth} height={stageHeight} fill='black'/>
                     {[...Array(64)].map((_, i) => (
                     <Circle key={i} id={`star-${i}`}  x={Math.random() * window.innerWidth} y={Math.random() * window.innerHeight} width={widthPercentage(2)} height={heightPercentage(2)} fill="white" opacity={engaged ? 1 : 0} shadowColor="black" shadowBlur={10}/>))}
                     <Circle x={widthPercentage(15)} y={heightPercentage(18)} radius={widthPercentage(3)} fill='white' shadowColor="white" shadowBlur={widthPercentage(30)} shadowOpacity={1} onClick={handleContext} opacity={audioCTX ? 0 : 1}/>
-                    <Text text="Click to Access" x={widthPercentage(20)} y={heightPercentage(14)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill='white' opacity={audioCTX ? 0 : 1}/>
-                    <Text text="User Audio" x={widthPercentage(20)} y={heightPercentage(17)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill='white' opacity={audioCTX ? 0 : 1}/>
+                    <Text text="Click to Access" x={widthPercentage(20)} y={heightPercentage(14)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill='white' opacity={mouseHelper && !hideUserAudioHelper ? 1 : 0}/>
+                    <Text text="User Audio" x={widthPercentage(20)} y={heightPercentage(17)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill='white' opacity={mouseHelper && !hideUserAudioHelper ? 1 : 0}/>
                     <Circle x={widthPercentage(20)} y={heightPercentage(15)} radius={widthPercentage(3)} fill={engaged ? 'red': 'white'} shadowColor="white" shadowBlur={widthPercentage(30)} shadowOpacity={1} onClick={handleEngage} onMouseEnter={handleEngageHelper} onMouseLeave={handleEngageHelper} opacity={audioCTX ? 1 : 0}/>
                     <Text text={engaged ? 'off' : 'on'} x={widthPercentage(19.25)} y={heightPercentage(13)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill={engaged ? 'white' : 'black'} opacity={audioCTX ? 1 : 0} onClick={handleEngage}/>
                     <Text text={engaged ? 'click to disengage' : 'click to engage'} x={widthPercentage(15)} y={heightPercentage(5)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill={'white'} opacity={engageHelper ? 1 : 0}/>
@@ -381,7 +393,7 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
                         <Circle x={widthPercentage(92)} y={heightPercentage(17.5)} radius={widthPercentage(2)} fill='pink' shadowColor="yellow" shadowBlur={widthPercentage(30)} shadowOpacity={1} opacity={distortionOversampleAmount <= -50 ? 1 : 0}/>
                         <Circle x={widthPercentage(92)} y={heightPercentage(20)} radius={widthPercentage(2)} fill='pink' shadowColor="yellow" shadowBlur={widthPercentage(30)} shadowOpacity={1} opacity={distortionOversampleAmount >= -49 && distortionOversampleAmount <= 49 ? 1 : 0}/>
                         <Circle x={widthPercentage(92)} y={heightPercentage(22.5)} radius={widthPercentage(2)} fill='pink' shadowColor="yellow" shadowBlur={widthPercentage(30)} shadowOpacity={1} opacity={distortionOversampleAmount >= 50 ? 1 : 0}/>
-                    <Text text="ATMOSPHERE" x={widthPercentage(32)} y={heightPercentage(15)} fontSize={widthPercentage(8)} fontFamily={'VT323'} fill='white'/>
+                    <Text text="ATMOSPHERE" x={widthPercentage(32)} y={heightPercentage(15)} fontSize={widthPercentage(8)} fontFamily={'VT323'} fill='white' opacity={mouseHelper ? 1 : 0}/>
                     <Text text="DRY/WET" x={widthPercentage(71)} y={heightPercentage(85)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill='white' opacity={wetDryHelper ? 1 : 0}/>
                     <Text text="VOLUME" x={widthPercentage(47)} y={heightPercentage(69)} fontSize={widthPercentage(3)} fontFamily={'VT323'} fill='white' opacity={volumeHelper ? 1 : 0}/>
                     <Text text="CONVOLVER MIX" x={widthPercentage(16)} y={heightPercentage(85)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill='white' opacity={reverbMixHelper ? 1 : 0}/>
