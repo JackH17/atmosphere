@@ -296,9 +296,6 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
         }
     }
 
-    
-
-
     return (
         <div>
             <Stage ref={stageRef} width={stageWidth} height={stageHeight}>
