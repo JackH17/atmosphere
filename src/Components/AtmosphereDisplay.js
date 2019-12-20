@@ -178,6 +178,11 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
     };
 
     const handleVolumeChange = () => {
+
+        if(!engaged){
+            return;
+        }
+
         setVolume(((Math.floor(volumeAmount/10)) + 10)/10);
     }
 
@@ -195,6 +200,10 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
     const handleWetDryChange = () => {
 
+        if(!engaged){
+            return;
+        }
+
         setWetDry(((Math.floor(wetDryAmount/10)) + 10)/10)
         
     };
@@ -210,6 +219,11 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
     };
 
     const handleReverbMixChange = () => {
+
+        if(!engaged){
+            return;
+        }
+
         setReverbMix(((Math.floor(reverbMixAmount/10)) + 10)/10);
     }
 
@@ -225,6 +239,10 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
     };
 
     const handleReverbSelectorChange = () => {
+
+        if(!engaged){
+            return;
+        }
 
         if(reverbSelectorAmount <= -50){
             setReverbSelector('bath vader')
@@ -255,6 +273,10 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
     const handleDistortionMixChange = () => {
 
+        if(!engaged){
+            return;
+        }
+
         setDistortionMix(((Math.floor(distortionMixAmount/10)) + 10)/10)
     }
 
@@ -269,6 +291,10 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
     };
 
     const handleDistortionOversampleChange = () => {
+
+        if(!engaged){
+            return;
+        }
         
         let amount = distortionOversampleAmount;
 
