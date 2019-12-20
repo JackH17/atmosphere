@@ -240,7 +240,7 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
     const handleReverbSelectorChange = () => {
 
-        if(!audioCTX){
+        if(!audioCTX || !engaged){
             return;
         }
 
