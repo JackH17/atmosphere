@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=VT323&display=swap');
 
 .app{
+    margin-top: 0;
     background: black;
     color: white;
 }

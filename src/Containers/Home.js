@@ -43,7 +43,7 @@ const Home = ({helloUser}) => {
                 <Stage width={stageWidth} height={stageHeight}>
                     <Layer>
                         <Rect width={stageWidth} height={stageHeight} fill='black'/>
-                        <Circle ref={homePlanet} x={widthPercentage(50)} y={heightPercentage(50)} radius={widthPercentage(10)} fill='blue' shadowColor="blue" shadowBlur={widthPercentage(20)} shadowOpacity={1} onClick={handleRedirect}/>
+                        <Circle ref={homePlanet} x={widthPercentage(50)} y={heightPercentage(50)} radius={widthPercentage(10)} fill='blue' shadowColor="blue" shadowBlur={widthPercentage(20)} shadowOpacity={1} onClick={handleRedirect} onTap={handleRedirect}/>
                     </Layer>
                 </Stage>
             
