@@ -172,6 +172,10 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
     }
 
     const handleEngage = () => {
+
+        if(!audioCTX){
+            return;
+        }
         setEngaged(!engaged)
         engageDisengage()
     };
