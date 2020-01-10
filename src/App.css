@@ -1,1 +1,23 @@
 @import url('https://fonts.googleapis.com/css?family=VT323&display=swap');
+
+.app{
+    background: black;
+    color: white;
+}
+
+
+.welcome-div{
+    margin-top: 0%;
+    color: white;
+    background: black;
+    font-family: 'VT323';
+    margin-bottom: 0;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.greeting{
+    justify-content: center;
+    align-items: center;
+}

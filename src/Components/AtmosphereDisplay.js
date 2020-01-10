@@ -183,13 +183,18 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
     const handleVolumeChange = () => {
 
         if(!audioCTX){
-            return;
+            window.alert('You must enable User Audio before you can enable Audio effects')
+            return ;
         }
 
         setVolume(((Math.floor(volumeAmount/10)) + 10)/10);
     }
 
     const getVolumeDragMove = (e) => {
+
+        if(!audioCTX){
+            return ;
+        }
 
         const difference = (e.currentTarget.attrs.x - e.evt.clientX)
 
@@ -203,8 +208,9 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
     const handleWetDryChange = () => {
 
-        if(!engaged){
-            return;
+        if(!audioCTX){
+            window.alert('You must enable User Audio before you can enable Audio effects')
+            return ;
         }
 
         setWetDry(((Math.floor(wetDryAmount/10)) + 10)/10)
@@ -212,6 +218,11 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
     };
 
     const getWetDryDragMove = (e) => {
+
+        if(!audioCTX){
+            return ;
+        }
+
         const difference = (e.currentTarget.attrs.x - e.evt.clientX)
 
         setWetDryAmount(difference);
@@ -224,13 +235,18 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
     const handleReverbMixChange = () => {
 
         if(!audioCTX){
-            return;
+            window.alert('You must enable User Audio before you can enable Audio effects')
+            return ;
         }
 
         setReverbMix(((Math.floor(reverbMixAmount/10)) + 10)/10);
     }
 
     const getReverbMixDragMove = (e) => {
+
+        if(!audioCTX){
+            return ;
+        }
 
         const difference = (e.currentTarget.attrs.x - e.evt.clientX)
 
@@ -243,8 +259,9 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
     const handleReverbSelectorChange = () => {
 
-        if(!audioCTX || !engaged){
-            return;
+        if(!audioCTX){
+            window.alert('You must enable User Audio before you can enable Audio effects')
+            return ;
         }
 
         if(reverbSelectorAmount <= -50){
@@ -265,6 +282,10 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
     const getReverbSelectorDragMove = (e) => {
 
+        if(!audioCTX){
+            return ;
+        }
+
         const difference = (e.currentTarget.attrs.x - e.evt.clientX)
 
         setReverbSelectorAmount(difference);
@@ -277,13 +298,19 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
     const handleDistortionMixChange = () => {
 
         if(!audioCTX){
-            return;
+            window.alert('You must enable User Audio before you can enable Audio effects')
+            return ;
         }
 
         setDistortionMix(((Math.floor(distortionMixAmount/10)) + 10)/10)
     }
 
     const getDistortionMixDragMove = (e) => {
+
+        if(!audioCTX){
+            return ;
+        }
+
         const difference = (e.currentTarget.attrs.x - e.evt.clientX)
 
         setDistortionMixAmount(difference);
@@ -296,7 +323,8 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
     const handleDistortionOversampleChange = () => {
 
         if(!audioCTX){
-            return;
+            window.alert('You must enable User Audio before you can enable Audio effects')
+            return ;
         }
         
         let amount = distortionOversampleAmount;
@@ -311,6 +339,11 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
     }
 
     const getDistortionOversampleDragMove = (e) => {
+
+        if(!audioCTX){
+            return ;
+        }
+
         const difference = (e.currentTarget.attrs.x - e.evt.clientX)
 
         setDistortionOversampleAmount(difference);
