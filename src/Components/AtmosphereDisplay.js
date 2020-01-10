@@ -62,7 +62,7 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
     useEffect(() => {
 
-        if(!engaged){
+        if(!engaged || !audioCTX){
             return;
         }
 

@@ -11,7 +11,6 @@ const App = () => {
   const [user, setUser] = useState(false);
 
   const helloUser = () => {
-    console.log('hello')
     setUser(!user)
   }
 
