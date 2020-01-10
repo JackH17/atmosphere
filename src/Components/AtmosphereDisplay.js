@@ -264,6 +264,10 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
             return ;
         }
 
+        if(!engaged){
+            return;
+        }
+
         if(reverbSelectorAmount <= -50){
             setReverbSelector('bath vader')
         } else if (reverbSelectorAmount >= -49 && reverbSelectorAmount <= -25){
@@ -284,7 +288,11 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
         if(!audioCTX){
             return ;
-        }
+        };
+
+        if(!engaged){
+            return;
+        };
 
         const difference = (e.currentTarget.attrs.x - e.evt.clientX)
 
