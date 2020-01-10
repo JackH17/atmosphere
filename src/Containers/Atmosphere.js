@@ -267,7 +267,6 @@ const AtmosDrums = () => {
 
         if(!context){
             window.alert('Current browser not supported')
-
             return;
         }
 
@@ -275,8 +274,8 @@ const AtmosDrums = () => {
 
         const userMediaStreamNode = await getUserMediaStream(context);
 
-        if(userMediaStreamNode.error){
-
+        if(userMediaStreamNode.error || !userMediaStreamNode){
+            window.alert('could not access user media')
             return;
 
         } else {
