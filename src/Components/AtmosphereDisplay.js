@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Konva from 'konva';
 import { Stage, Layer, Rect, Circle, Text } from "react-konva";
 
-const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, handleChannelGainChange, handleWetDryGainChange, handleDistortionMixControl, handleDistortionOversampleControl, handleConvolverMixControl, handleConvolverSelector}) => {
+const AtmosDrumsDisplay = ({audioCTX, getContext, loaded, engageDisengage, analyser, handleChannelGainChange, handleWetDryGainChange, handleDistortionMixControl, handleDistortionOversampleControl, handleConvolverMixControl, handleConvolverSelector}) => {
 
     const [engaged, setEngaged] = useState();
 
@@ -173,9 +173,14 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
     const handleEngage = () => {
 
+        if(!loaded){
+            window.alert('Effects still loading!')
+            return;
+        }
         if(!audioCTX){
             return;
         }
+
         setEngaged(!engaged)
         engageDisengage()
     };

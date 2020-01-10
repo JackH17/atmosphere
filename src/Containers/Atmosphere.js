@@ -17,6 +17,13 @@ const AtmosDrums = () => {
     const [audioCTX, setAudioCTX] = useState(false)
     const [engaged, setEngaged] = useState(false);
 
+    const [inputLoaded, setInputLoaded] = useState(false);
+    const [outputLoaded, setOutputLoaded] = useState(false);
+    const [distortionLoaded, setDistortionLoaded] = useState(false);
+    const [convolverLoaded, setConvolverLoaded] = useState(false)
+    const [analyserLoaded, setAnalyserLoaded] = useState(false);
+    
+
     const [input, setInput] = useState();
     const [output, setOutput] = useState();
 
@@ -70,6 +77,19 @@ const AtmosDrums = () => {
     const convolverOutput = useRef();
 
     const outputGain = useRef();
+
+    const [loaded, setLoaded] = useState(false)
+
+    useEffect(() => {
+
+        const loadingChecks = [inputLoaded, outputLoaded, distortionLoaded, convolverLoaded, analyserLoaded];
+
+        if(loadingChecks.includes(false)){
+            return;
+        }
+
+        setLoaded(true)
+    }, [inputLoaded, outputLoaded, distortionLoaded, convolverLoaded, analyserLoaded])
 
     useEffect(() => {
 
@@ -175,76 +195,96 @@ const AtmosDrums = () => {
     }, [convolverDryMix, convolverWetMix])
 
 
-    const setUserInput = (streamNode, gainNode) => {
+    const setUserInput = async (streamNode, gainNode) => {
 
         setInput(streamNode);
 
-        channelGain.current = gainNode;
+        channelGain.current = await gainNode;
+
+        setInputLoaded(true);
     };
 
-    const setWetDryOutput = (dryGainNode, wetGainNode, outputGainNode) => {
+    const setWetDryOutput = async (dryGainNode, wetGainNode, outputGainNode) => {
 
-        dryGain.current = dryGainNode;
+        dryGain.current = await dryGainNode;
         dryGain.current.gain.value = 1;
 
-        wetGain.current = wetGainNode;
+        wetGain.current = await wetGainNode;
         wetGain.current.gain.value = 0;
 
-        outputGain.current = outputGainNode;
+        outputGain.current = await outputGainNode;
 
+        setOutputLoaded(true);
     };
 
     const setComponentDistortion = async (distortionDryGainNode, distortionWetGainNode, distortionOutputGainNode, distortionNode) => {
 
-        distortionDry.current = distortionDryGainNode;
-        distortionWet.current = distortionWetGainNode;
-        distortionOutput.current = distortionOutputGainNode;
+        distortionDry.current = await distortionDryGainNode;
+        distortionWet.current = await distortionWetGainNode;
+        distortionOutput.current = await distortionOutputGainNode;
 
         const curve = await distortionCurve(50);
         distortionNode.curve = curve;
 
-        distortion.current = distortionNode;
+        distortion.current = await distortionNode;
+
+        setDistortionLoaded(true);
+
     };
 
     const setComponentConvolvers = async (context) => {
 
-        convolverDry.current = context.createGain();
+        convolverDry.current = await context.createGain();
         convolverDry.current.gain.value = 1;
 
-        convolverWet.current = context.createGain();
+        
+        convolverWet.current = await context.createGain();
         convolverWet.current.gain.value = 0;
+        
 
-        convolverOutput.current = context.createGain();
+        convolverOutput.current = await context.createGain();
 
         bath_vader.current = await CreateConvolver(BathVader, context);
-        bath_vader_gain.current = context.createGain();
+        bath_vader_gain.current = await context.createGain();
         bath_vader_gain.current.gain.value = 1;
 
+        
+
         cool_hand_luke.current = await CreateConvolver(CoolHandLuke, context);
-        cool_hand_luke_gain.current = context.createGain();
+        cool_hand_luke_gain.current = await context.createGain();
         cool_hand_luke_gain.current.gain.value = 0;
+       
 
         elegant_weapon.current = await CreateConvolver(ElegantWeapon, context);
-        elegant_weapon_gain.current = context.createGain();
+        elegant_weapon_gain.current = await context.createGain();
         elegant_weapon_gain.current.gain.value = 0;
+      
 
         et_tu_dee_too.current = await CreateConvolver(EtTuDeTu, context);
-        et_tu_dee_too_gain.current = context.createGain();
+        et_tu_dee_too_gain.current = await context.createGain();
         et_tu_dee_too_gain.current.gain.value = 0;
+       
 
         having_a_blast.current = await CreateConvolver(HavingABlast, context);
-        having_a_blast_gain.current = context.createGain();
+        having_a_blast_gain.current = await context.createGain();
         having_a_blast_gain.current.gain.value = 0;
+        
 
         hello_there.current = await CreateConvolver(HelloThere, context);
-        hello_there_gain.current = context.createGain();
+        hello_there_gain.current = await context.createGain();
         hello_there_gain.current.gain.value = 0;
+
+        setConvolverLoaded(true)
+
     }
 
-    const setAudioAnalyser = (analyserNode) => {
+    const setAudioAnalyser = async (analyserNode) => {
 
         analyserNode.fftSize = 128;
-        analyser.current = analyserNode;
+        analyser.current = await analyserNode;
+    
+        setAnalyserLoaded(true);
+
     };
 
     const createAudioNodes = (userMediaStreamNode, context) => {
@@ -285,7 +325,7 @@ const AtmosDrums = () => {
 
     };
 
-    const engageDisengage = () => {
+    const engageDisengage = async () => {
 
         if(!engaged){
 
@@ -461,7 +501,7 @@ const AtmosDrums = () => {
 
     return (
         <div>
-            <AtmosDrumsDisplay getContext={getContext} engageDisengage={engageDisengage} analyser={analyser} handleChannelGainChange={handleChannelGainChange} handleWetDryGainChange={handleWetDryGainChange} handleDistortionMixControl={handleDistortionMixControl} handleDistortionOversampleControl={handleDistortionOversampleControl} handleConvolverMixControl={handleConvolverMixControl} handleConvolverSelector={handleConvolverSelector} audioCTX={audioCTX}/>  
+            <AtmosDrumsDisplay getContext={getContext} engageDisengage={engageDisengage} loaded={loaded} analyser={analyser} handleChannelGainChange={handleChannelGainChange} handleWetDryGainChange={handleWetDryGainChange} handleDistortionMixControl={handleDistortionMixControl} handleDistortionOversampleControl={handleDistortionOversampleControl} handleConvolverMixControl={handleConvolverMixControl} handleConvolverSelector={handleConvolverSelector} audioCTX={audioCTX}/>  
         </div>
     )
 }
