@@ -265,6 +265,12 @@ const AtmosDrums = () => {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const context =  new AudioContext();
 
+        if(!context){
+            window.alert('Current browser not supported')
+
+            return;
+        }
+
         setOutput(context.destination);
 
         const userMediaStreamNode = await getUserMediaStream(context);
