@@ -39,6 +39,7 @@ const Home = ({helloUser}) => {
         <div>
             <div className="welcome-div">
                 <h1 className={"greeting"}>welcome to ATMOSPHERE click the planet to enter</h1>
+                <h2 className={"greeting"}>Best experienced through headphones on a laptop or desktop</h2>
             </div>
                 <Stage width={stageWidth} height={stageHeight}>
                     <Layer>

@@ -377,16 +377,16 @@ const AtmosDrumsDisplay = ({audioCTX, getContext, engageDisengage, analyser, han
 
     return (
         <div>
-            <Stage ref={stageRef} width={stageWidth} height={stageHeight} onMouseEnter={handleFirstMouseEnter}>
+            <Stage ref={stageRef} width={stageWidth} height={stageHeight} onMouseEnter={handleFirstMouseEnter} onTap={handleFirstMouseEnter}>
                 <Layer>
                     <Rect width={stageWidth} height={stageHeight} fill='black'/>
                     {[...Array(64)].map((_, i) => (
                     <Circle key={i} id={`star-${i}`}  x={Math.random() * window.innerWidth} y={Math.random() * window.innerHeight} width={widthPercentage(2)} height={heightPercentage(2)} fill="white" opacity={engaged ? 1 : 0} shadowColor="black" shadowBlur={10}/>))}
-                    <Circle x={widthPercentage(15)} y={heightPercentage(18)} radius={widthPercentage(3)} fill='white' shadowColor="white" shadowBlur={widthPercentage(30)} shadowOpacity={1} onClick={handleContext} opacity={audioCTX ? 0 : 1}/>
+                    <Circle x={widthPercentage(15)} y={heightPercentage(18)} radius={widthPercentage(3)} fill='white' shadowColor="white" shadowBlur={widthPercentage(30)} shadowOpacity={1} onClick={handleContext} onTap={handleContext} opacity={audioCTX ? 0 : 1}/>
                     <Text text="Click to Access" x={widthPercentage(20)} y={heightPercentage(14)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill='white' opacity={mouseHelper && !hideUserAudioHelper ? 1 : 0}/>
                     <Text text="User Audio" x={widthPercentage(20)} y={heightPercentage(17)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill='white' opacity={mouseHelper && !hideUserAudioHelper ? 1 : 0}/>
-                    <Circle x={widthPercentage(20)} y={heightPercentage(15)} radius={widthPercentage(3)} fill={engaged ? 'red': 'white'} shadowColor="white" shadowBlur={widthPercentage(30)} shadowOpacity={1} onClick={handleEngage} onMouseEnter={handleEngageHelper} onMouseLeave={handleEngageHelper} opacity={audioCTX ? 1 : 0}/>
-                    <Text text={engaged ? 'off' : 'on'} x={widthPercentage(19.25)} y={heightPercentage(13)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill={engaged ? 'white' : 'black'} opacity={audioCTX ? 1 : 0} onClick={handleEngage}/>
+                    <Circle x={widthPercentage(20)} y={heightPercentage(15)} radius={widthPercentage(3)} fill={engaged ? 'red': 'white'} shadowColor="white" shadowBlur={widthPercentage(30)} shadowOpacity={1} onClick={handleEngage} onTap={handleEngage} onMouseEnter={handleEngageHelper} onMouseLeave={handleEngageHelper} opacity={audioCTX ? 1 : 0}/>
+                    <Text text={engaged ? 'off' : 'on'} x={widthPercentage(19.25)} y={heightPercentage(13)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill={engaged ? 'white' : 'black'} opacity={audioCTX ? 1 : 0} onClick={handleEngage} onTap={handleEngage}/>
                     <Text text={engaged ? 'click to disengage' : 'click to engage'} x={widthPercentage(15)} y={heightPercentage(5)} fontSize={widthPercentage(2)} fontFamily={'VT323'} fill={'white'} opacity={engageHelper ? 1 : 0}/>
                     <Circle ref={volumePlanet} x={widthPercentage(50)} y={heightPercentage(50)} radius={widthPercentage(10)} fill='blue' shadowColor="blue" shadowBlur={widthPercentage(20)} draggable onDragEnd={handleVolumeChange} onDragMove={getVolumeDragMove} dragBoundFunc={function(pos){return{x: this.absolutePosition().x, y: this.absolutePosition().y}}} onMouseEnter={handleVolumeHelper} onMouseLeave={handleVolumeHelper} shadowOpacity={1}/>
                         <Circle x={widthPercentage(38)} y={heightPercentage(60)} radius={widthPercentage(0.2)} fill='pink' shadowColor="blue" shadowBlur={widthPercentage(10)} shadowOpacity={1} opacity={volumeAmount >= -90 ? 1 : 0}/>
