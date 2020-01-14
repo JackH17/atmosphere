@@ -36,7 +36,7 @@ const Home = ({helloUser}) => {
 
 
     return (
-        <div>
+        <div style={{clear: 'both'}}>
             <div className="welcome-div">
                 <h1 className={"greeting"}>welcome to ATMOSPHERE click the planet to enter</h1>
                 <h2 className={"greeting"}>Best experienced through headphones on a laptop or desktop</h2>

@@ -1,9 +1,20 @@
 @import url('https://fonts.googleapis.com/css?family=VT323&display=swap');
 
+* {    
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+body > #root > div {
+    height: 100vh;
+    clear: both;
+}
+
 .app{
     margin-top: 0;
     background: black;
     color: white;
+    margin-top: 0;
 }
 
 
@@ -16,6 +27,7 @@
     justify-content: center;
     align-items: center;
     text-align: center;
+    clear: both;
 }
 
 .greeting{
