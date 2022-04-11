@@ -15,6 +15,7 @@ const Home = ({helloUser}) => {
     const homePlanet = useRef();
 
     const widthPercentage = (width) => {   
+        console.log('this is different')
         return Math.floor(stageWidth / (100 / width))
     }
 
