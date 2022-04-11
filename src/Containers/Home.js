@@ -25,6 +25,7 @@ const Home = ({helloUser}) => {
     }
 
     useEffect(() => {
+        console.log('Third change');
         window.addEventListener('resize', updateWidthAndHeight)
 
         return () => {
