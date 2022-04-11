@@ -19,7 +19,8 @@ const Home = ({helloUser}) => {
         return Math.floor(stageWidth / (100 / width))
     }
 
-    const heightPercentage = (height) => {   
+    const heightPercentage = (height) => {  
+        console.log('second change') 
         return Math.floor(stageHeight / (100 / height))
     }
 
