@@ -14,7 +14,8 @@ const Home = ({helloUser}) => {
 
     const homePlanet = useRef();
 
-    const widthPercentage = (width) => {   
+    const widthPercentage = (width) => {
+        console.log('test-branch')
         return Math.floor(stageWidth / (100 / width))
     }
 
